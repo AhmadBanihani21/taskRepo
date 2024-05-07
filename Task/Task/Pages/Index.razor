@@ -1,0 +1,48 @@
+﻿@page "/"
+<PageTitle>Contact List</PageTitle>
+
+<h3>You can sort the list by any column you want by pressing to column name</h3>
+<a href="/add">Add New Contact</a>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th @onclick="() => SortByColumn('1')" style="cursor:pointer">First Name</th>
+            <th @onclick="() => SortByColumn('2')" style="cursor:pointer">Last Name</th>
+            <th @onclick="() => SortByColumn('3')" style="cursor:pointer">Email</th>
+            <th @onclick="() => SortByColumn('4')" style="cursor:pointer">Phone Number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var contact in contactList.Contacts)
+        {
+            <tr>
+                <td>@contact.firstName</td>
+                <td>@contact.lastName</td>
+                <td>@contact.email</td>
+                <td>@contact.phoneNumber</td>
+                <td>
+                    <a href="/Edit/@contact.Id">Edit</a>
+                    <a href="/delete/@contact.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private void SortByColumn(char columnName)
+    {
+        // Implement sorting based on the provided column name.
+        contactList.Contacts = columnName switch
+        {
+            '1' => contactList.Contacts.OrderBy(c => c.firstName).ToList(),
+            '2' => contactList.Contacts.OrderBy(c => c.lastName).ToList(),
+            '3' => contactList.Contacts.OrderBy(c => c.email).ToList(),
+            '4' => contactList.Contacts.OrderBy(c => c.phoneNumber).ToList(),
+            _ => contactList.Contacts
+        };
+    }
+  
+}

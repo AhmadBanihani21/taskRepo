@@ -1,0 +1,66 @@
+﻿@page "/edit/{id:int}"
+
+<h3>Edit Contact</h3>
+<EditForm Model="editingContact" OnValidSubmit="SaveEditingContact">
+
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <input @bind="editingContact.firstName" class="form-control" placeholder="First Name" />
+        <ValidationMessage For="@(() => editingContact.firstName)" />
+    </div>
+    <div class="mb-3">
+        <input @bind="editingContact.lastName" class="form-control" placeholder="Last Name" />
+        <ValidationMessage For="@(() => editingContact.lastName)" />
+    </div>
+    <div class="mb-3">
+        <input @bind="editingContact.email" class="form-control" placeholder="Email" />
+        <ValidationMessage For="@(() => editingContact.email)" />
+    </div>
+    <div class="mb-3">
+        <input @bind="editingContact.phoneNumber" class="form-control" placeholder="Phone Number" />
+        <ValidationMessage For="@(() => editingContact.phoneNumber)" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-secondary" @onclick="CancelEditing">Cancel</button>
+</EditForm>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Contact editingContact;
+    private Contact originalContact; // Store original contact
+
+    protected override void OnInitialized()
+    {
+        // Retrieve the contact to edit
+        editingContact = contactList.Contacts.FirstOrDefault(c => c.Id == Id);
+
+        // Make a copy of the original contact
+        originalContact = new Contact
+            {
+                Id = editingContact.Id,
+                firstName = editingContact.firstName,
+                lastName = editingContact.lastName,
+                email = editingContact.email,
+                phoneNumber = editingContact.phoneNumber
+            };
+    }
+
+    private void SaveEditingContact()
+    {
+        // Redirect back to the contacts list page
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void CancelEditing()
+    {
+        // Revert changes
+        editingContact.firstName = originalContact.firstName;
+        editingContact.lastName = originalContact.lastName;
+        editingContact.email = originalContact.email;
+        editingContact.phoneNumber = originalContact.phoneNumber;
+
+        // Redirect back to contacts list page
+        NavigationManager.NavigateTo("/");
+    }
+}
